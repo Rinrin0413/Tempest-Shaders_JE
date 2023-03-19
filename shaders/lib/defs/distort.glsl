@@ -7,7 +7,7 @@
 // - `include "lib/defs/properties.glsl"`
 
 /**
- * Euclidian distance is defined as sqrt(a^2 +b^2 +...)
+ * Euclidean distance is defined as sqrt(a^2 +b^2 +...)
  * This length function instead does cbrt(a^3 + b^3 + ...)
  * This results in smaller distances along the diagonal axes.
  */

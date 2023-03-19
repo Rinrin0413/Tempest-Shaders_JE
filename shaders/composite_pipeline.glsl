@@ -138,7 +138,7 @@ uniform mat4 gbufferModelViewInverse;
             /* The sky light level of Vanilla */
             float sky_light = d_gaux2.z;
 
-            /* Hight precision light intensity */
+            /* High precision light intensity */
             float light_intensity_highp = d_gaux1.z;
 
             /* The surface normal */

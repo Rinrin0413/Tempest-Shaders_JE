@@ -27,7 +27,7 @@ varying vec4 glcolor;
 varying vec2 lmcoord;
 varying vec3 sun_pos, moon_pos;
 varying vec4 shadowPos;
-/* Suface normal */
+/* Surface normal */
 varying vec3 normal;
 /* Sky light of Vanilla */
 varying float sky_light;
