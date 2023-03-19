@@ -1,0 +1,49 @@
+profile.default = §rQuality - §dHight
+profile.ultra = §rQuality - §cUltra
+profile.insane = §rQuality - §4Insane ᐛ
+profile.lite = §rQuality - §aLite
+profile.low = §rQuality - §bLow
+profile.medium = §rQuality - §eMedium
+profile.custom = §rQuality - §6Custom
+
+screen.shadow = Shadows
+option.shadowMapResolution = Shadow Resolution
+value.shadowMapResolution.16384 = insane ᐛ 16384
+option.SHADOW_BIAS = Shadow Bias
+option.SHADOW_BIAS.comment = If you got shadow acne, increase this. If you got peter panning, decrease this
+
+screen.env = Environment
+option.ENABLE_FOG = Fog
+option.ENABLE_WIND = Wind
+option.ENABLE_WIND.comment = The wind blows the foliages and lantern etc
+
+screen.water = Water
+option.ENABLE_WATER_WAVES = Water waves
+
+screen.sky = Sky
+option.ENABLE_CLOUDS = Clouds
+option.CLOUDS_QUALITY = Clouds Quality
+option.CLOUDS_QUALITY.comment = Shadings to clouds. Lite: no shading
+value.CLOUDS_QUALITY.0 = Lite
+value.CLOUDS_QUALITY.1 = Low
+value.CLOUDS_QUALITY.2 = Medium
+option.sunPathRotation = Sun/Moon Direction
+option.sunPathRotation.comment = -90°: North pole. 0°: Equator. 90°:  South pole
+suffix.sunPathRotation = °
+option.ENABLE_STARS = Stars
+option.STARS_COL = Color of Stars
+value.STARS_COL.0 = Colorful
+value.STARS_COL.1 = White
+value.STARS_COL.2 = Blue
+value.STARS_COL.3 = Yellow
+option.ENABLE_MOON_TEXTURE = Moon Texture
+option.ENABLE_MOON_TEXTURE.comment = Craters and sea of the moon
+option.THE_END_SKY_COL = Sky Color of The End
+value.THE_END_SKY_COL.0 = Purple
+value.THE_END_SKY_COL.1 = Red
+value.THE_END_SKY_COL.2 = Green
+value.THE_END_SKY_COL.3 = Blue
+value.THE_END_SKY_COL.4 = Colorful
+value.THE_END_SKY_COL.5 = Monochrome
+option.ENABLE_THE_END_SKY_IN_OVERWORLD = The End Sky in Overworld
+option.ENABLE_THE_END_SKY_IN_OVERWORLD.comment = The sky of the Overworld becomes the sky of the end

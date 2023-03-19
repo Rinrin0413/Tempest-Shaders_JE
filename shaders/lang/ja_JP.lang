@@ -1,0 +1,49 @@
+profile.default = §r品質 - §d高
+profile.ultra = §r品質 - §c非常に高い
+profile.insane = §r品質 - §4狂気的 ᐛ
+profile.lite = §r品質 - §a最軽量
+profile.low = §r品質 - §b低
+profile.medium = §r品質 - §e中
+profile.custom = §r品質 - §6カスタム
+
+screen.shadow = 影
+option.shadowMapResolution = 影の解像度
+value.shadowMapResolution.16384 = 狂気的 ᐛ 16384
+option.SHADOW_BIAS = 影のバイアス
+option.SHADOW_BIAS.comment = シャドウアクネ(磁場みたいな模様とか三角形のブツブツ)が生じた場合この値を増やしてください. ピーター・パンニング(不自然な影のズレ)が生じた場合は減らしてください
+
+screen.env = 環境
+option.ENABLE_FOG = 霧
+option.ENABLE_WIND = 風
+option.ENABLE_WIND.comment = 風で草木やランタンなどが揺れます
+
+screen.water = 水
+option.ENABLE_WATER_WAVES = 水の波
+
+screen.sky = 空
+option.ENABLE_CLOUDS = 雲
+option.CLOUDS_QUALITY = 雲の品質
+option.CLOUDS_QUALITY.comment = 雲の陰影処理の品質. 最軽量: 陰影処理無し
+value.CLOUDS_QUALITY.0 = 最軽量
+value.CLOUDS_QUALITY.1 = 低
+value.CLOUDS_QUALITY.2 = 中
+option.sunPathRotation = 太陽や月の軌道
+option.sunPathRotation.comment = -90°: 北極. 0°: 赤道. 90°: 南極
+suffix.sunPathRotation = °
+option.ENABLE_STARS = 星空
+option.STARS_COL = 星の色
+value.STARS_COL.0 = カラフル
+value.STARS_COL.1 = 白色
+value.STARS_COL.2 = 青色
+value.STARS_COL.3 = 黄色
+option.ENABLE_MOON_TEXTURE = 月のテクスチャ
+option.ENABLE_MOON_TEXTURE.comment = 月のクレーターや海など
+option.THE_END_SKY_COL = エンドの空の色
+value.THE_END_SKY_COL.0 = 紫色
+value.THE_END_SKY_COL.1 = 赤色
+value.THE_END_SKY_COL.2 = 緑色
+value.THE_END_SKY_COL.3 = 青色
+value.THE_END_SKY_COL.4 = カラフル
+value.THE_END_SKY_COL.5 = モノクロ
+option.ENABLE_THE_END_SKY_IN_OVERWORLD = オーバーワールドでエンドの空
+option.ENABLE_THE_END_SKY_IN_OVERWORLD.comment = オーバーワールドの空がエンドの空と同じになります
