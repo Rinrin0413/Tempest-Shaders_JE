@@ -200,9 +200,7 @@ float snoise(vec2 v) {
     return 130.0 * dot(m, g);
 }
 
-/**
- *  Whether the color is colorless.
- */
+/** Whether the color is colorless. */
 bool is_colorless(const vec3 color) {
     return color.r == color.g && color.g == color.b;
 }
