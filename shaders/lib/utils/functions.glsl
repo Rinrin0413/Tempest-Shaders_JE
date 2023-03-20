@@ -132,7 +132,7 @@ float noise12(vec2 x) {
 float fbm12(vec2 x, int octaves, float frame) {
 	float v = 0.;
 	float amplitude = .5;
-    float speed = .05;
+    float speed = .062;
 	for (int i = 0; i < octaves; ++i) {
 		v += amplitude*noise12(x);
 		x *= 2.;
