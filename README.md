@@ -23,7 +23,7 @@ See [releases](https://github.com/Rinrin0413/Tempest-Shaders_JE/releases)
 
 ## Requirements
 
-- Minecraft Java Edition 1.18 or later
+- Minecraft Java Edition 1.17 or later
 - OptiFine or Iris Shaders
 - Windows or Linux
 
