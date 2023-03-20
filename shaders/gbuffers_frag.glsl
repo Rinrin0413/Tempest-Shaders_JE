@@ -36,7 +36,7 @@ varying float is_water;
 #include "lib/utils/functions.glsl"
 #include "lib/defs/properties.glsl"
 
-const int shadowMapResolution = 4096; // [64 512 1024 2048 4096 8192 16384]
+const int shadowMapResolution = 4096; // [512 1024 2048 4096 8192 16384]
 // Fix artifacts when colored shadows are enabled
 const bool shadowcolor0Nearest = true;
 const bool shadowtex0Nearest = true;
