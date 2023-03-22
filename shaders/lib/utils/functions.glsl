@@ -71,7 +71,7 @@ float hash11(float p) {
  * Distributed under the MIT License: https://opensource.org/licenses/mit-license.php
  */
 float hash12(const vec2 p) {
-	vec3 p3  = fract(vec3(p.xyx)*.1031);
+    vec3 p3  = fract(vec3(p.xyx)*.1031);
     p3 += dot(p3, p3.yzx +33.33);
     return fract((p3.x + p3.y)*p3.z);
 }
@@ -84,7 +84,7 @@ float hash12(const vec2 p) {
  * Distributed under the MIT License: https://opensource.org/licenses/mit-license.php
  */
 float hash13(vec3 p3) {
-	p3 = fract(p3*.1031);
+    p3 = fract(p3*.1031);
     p3 += dot(p3, p3.zyx +31.32);
     return fract((p3.x +p3.y)*p3.z);
 }
@@ -100,24 +100,24 @@ float noise12(vec2 x) {
     vec2 i = floor(x);
     vec2 f = fract(x);
 
-	// Four corners in 2D of a tile.
-	float a = hash12(i);
+    // Four corners in 2D of a tile.
+    float a = hash12(i);
     float b = hash12(i +vec2(1., 0.));
     float c = hash12(i +vec2(0., 1.));
     float d = hash12(i +vec2(1., 1.));
 
     // Simple 2D lerp using smoothstep envelope between the values.
-	/*return vec3(mix(
+    /*return vec3(mix(
         lerp(a, b, smoothstep(0., 1., f.x)),
-		lerp(c, d, smoothstep(0., 1., f.x)),
+        lerp(c, d, smoothstep(0., 1., f.x)),
         smoothstep(0., 1., f.y)
     ));*/
 
     // Same code.
     // with the clamps in smoothstep and common subexpressions optimized away.
-	// Cubic Hermine Curve. Same as smoothstep().
+    // Cubic Hermine Curve. Same as smoothstep().
     vec2 u = f*f*(3. -2.*f);
-	return lerp(a, b, u.x) +(c -a)*u.y*(1. -u.x) +(d -b)*u.x*u.y;
+    return lerp(a, b, u.x) +(c -a)*u.y*(1. -u.x) +(d -b)*u.x*u.y;
 }
 
 /**
@@ -130,16 +130,16 @@ float noise12(vec2 x) {
  * And modified by Rinrin.rs
  */
 float fbm12(vec2 x, int octaves, float frame) {
-	float v = 0.;
-	float amplitude = .5;
+    float v = 0.;
+    float amplitude = .5;
     float speed = .062;
-	for (int i = 0; i < octaves; ++i) {
-		v += amplitude*noise12(x);
-		x *= 2.;
+    for (int i = 0; i < octaves; ++i) {
+    v += amplitude*noise12(x);
+        x *= 2.;
         x.xy -= frame*speed*float(i +1);
-		amplitude *= .5;
-	}
-	return v;
+    amplitude *= .5;
+    }
+    return v;
 }
 
 /**

@@ -12,18 +12,18 @@
  * This results in smaller distances along the diagonal axes.
  */
 float cube_len(vec2 v) {
-	return pow(abs(v.x*v.x*v.x) +abs(v.y*v.y*v.y), 1./3.);
+    return pow(abs(v.x*v.x*v.x) +abs(v.y*v.y*v.y), 1./3.);
 }
 
 float distort_factor(vec2 v) {
-	return cube_len(v) +SHADOW_DISTORT_FACTOR;
+    return cube_len(v) +SHADOW_DISTORT_FACTOR;
 }
 
 vec3 distort313(vec3 v, float factor) {
-	return vec3(v.xy/factor, v.z*.5);
+    return vec3(v.xy/factor, v.z*.5);
 }
 
 vec3 distort33(vec3 v) {
-	float factor = distort_factor(v.xy);
-	return distort313(v, factor);
+    float factor = distort_factor(v.xy);
+    return distort313(v, factor);
 }

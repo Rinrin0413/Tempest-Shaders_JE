@@ -11,8 +11,8 @@ uniform mat4 gbufferModelViewInverse;
     uniform vec3 sunPosition, moonPosition;
 
     void main() {
-		sun_pos = normalize(mat3(gbufferModelViewInverse)*sunPosition);
-		moon_pos = normalize(mat3(gbufferModelViewInverse)*moonPosition);
+        sun_pos = normalize(mat3(gbufferModelViewInverse)*sunPosition);
+        moon_pos = normalize(mat3(gbufferModelViewInverse)*moonPosition);
         texcoord = (gl_TextureMatrix[0]*gl_MultiTexCoord0).xy;
 
         gl_Position = ftransform();

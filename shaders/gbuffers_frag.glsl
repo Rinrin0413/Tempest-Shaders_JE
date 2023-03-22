@@ -148,7 +148,7 @@ void main() {
     // 13 = colortex13
     // 14 = colortex14
     // 15 = colortex15
-	gl_FragData[0] = albedo; // gcolor
+    gl_FragData[0] = albedo; // gcolor
     gl_FragData[1] = vec4(is_blend, is_water, light_intensity_highp, 1.); // gaux1
     gl_FragData[2] = vec4(d_lmc.y, is_block, sky_light, 1.); // gaux2
     gl_FragData[3] = vec4(normal, 1.); // gaux3
