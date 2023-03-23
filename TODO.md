@@ -31,7 +31,7 @@
 - Nether
 - The End
 
-## Considerings
+## Consider
 
 - Lightings
     - Colored lightings
