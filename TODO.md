@@ -1,9 +1,12 @@
 # TODO
 
+## Bugs
+
+- Indoor block light too bright in rainy weather
+- Rain drops are drowned out by fog
+
 ## Queue
 
-- Godrays
-    - Colored godrays
 - Sun/Moon light bloom
 - Lens flare
 - Smooth shadows
@@ -44,6 +47,9 @@
 - Shadows
     - Colored shadows
     - Directional shadows
+- Environment
+    - Fog
+    - Rain
 - Sky
     - Sky color
     - Sun/Moon
@@ -51,6 +57,4 @@
     - Stars
     - Rain
     - Sky of the End
-- Environment
-    - Fog
-    - Rain
+- Godrays
