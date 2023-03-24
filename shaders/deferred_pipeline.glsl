@@ -18,8 +18,11 @@ varying vec2 texcoord;
     uniform sampler2D gcolor;
     uniform sampler2D depthtex0;
     uniform sampler2D noisetex;
+    uniform sampler2D shadowtex0;
     uniform mat4 gbufferProjectionInverse;
     uniform mat4 gbufferModelView, gbufferModelViewInverse;
+    uniform mat4 shadowProjection;
+    uniform mat4 shadowModelView;
     uniform float viewWidth, viewHeight;
     uniform float rainStrength;
     uniform vec3 sunPosition, moonPosition;
@@ -32,6 +35,7 @@ varying vec2 texcoord;
     #include "lib/defs/stars_col.glsl"
     #include "lib/defs/sun_moon_col.glsl"
     #include "lib/defs/properties.glsl"
+    #include "lib/defs/distort.glsl"
 
     /**
      * 2D Fractal Brownian Motion for the moon texture.
@@ -102,17 +106,25 @@ varying vec2 texcoord;
 
         float depth0 = texture2D(depthtex0, texcoord).x;
 
+        // Relative position
+        vec4 rel_pos = gbufferProjectionInverse*vec4(vec3(texcoord, depth0)*2. -1., 1.);
+        rel_pos = gbufferModelViewInverse*(rel_pos/rel_pos.w);
+        rel_pos = rel_pos/rel_pos.w;
+
+        vec4 sky_rel_pos = normalize(rel_pos);
+
+        vec3 sun_pos = normalize(mat3(gbufferModelViewInverse)*sunPosition);
+        vec3 moon_pos = normalize(mat3(gbufferModelViewInverse)*moonPosition);
+
+        // float:is_day, float:is_night, is_twilight
+        #include "lib/utils/time_elms.glsl"
+
         // Whether is sky
         if (1. <= depth0) {
-            /* Relative position */
-            vec4 rel_pos = gbufferProjectionInverse*vec4(vec3(texcoord, depth0)*2. -1., 1.);
-            rel_pos = gbufferModelViewInverse*(rel_pos/rel_pos.w);
-            rel_pos = normalize(rel_pos/rel_pos.w);
-
             #if defined(END_SHADERS) || defined(ENABLE_THE_END_SKY_IN_OVERWORLD)
                 // The end door:
                 float opening_speed = frameTimeCounter/16.;
-                vec3 noise = texture2D(noisetex, rel_pos.yy +opening_speed).rgb;
+                vec3 noise = texture2D(noisetex, sky_rel_pos.yy +opening_speed).rgb;
 
                 vec3 noisy_base_col = vec3(
                 #if THE_END_SKY_COL == 0 // Purple
@@ -138,17 +150,11 @@ varying vec2 texcoord;
                 #endif
                 ;
 
-                albedo = .97 < length(rel_pos.y) ? vec3(0.) : albedo;
+                albedo = .97 < length(sky_rel_pos.y) ? vec3(0.) : albedo;
             #else
                 // The sky of the overworld
                 
                 // ▼ DB
-
-                vec3 sun_pos = normalize(mat3(gbufferModelViewInverse)*sunPosition);
-                vec3 moon_pos = normalize(mat3(gbufferModelViewInverse)*moonPosition);
-
-                // float:is_day, float:is_night, is_twilight
-                #include "lib/utils/time_elms.glsl"
 
                 #define IMPORT_STARS_COL
                 #define IMPORT_SKY_COL
@@ -171,12 +177,12 @@ varying vec2 texcoord;
                     float opacity = lerp(.8, 0., rainStrength);
 
                     float smallness = 224.;
-                    float star = smoothstep(.997, 1., hash13(floor((rel_pos.xyz)*smallness)));
+                    float star = smoothstep(.997, 1., hash13(floor((sky_rel_pos.xyz)*smallness)));
 
                     vec3 stars_color;
 
                     #if STARS_COL == 0 // Colorful
-                        stars_color = (texture2D(noisetex, rel_pos.xz/(rel_pos.y +1.)).rgb +1.)*.83;
+                        stars_color = (texture2D(noisetex, sky_rel_pos.xz/(sky_rel_pos.y +1.)).rgb +1.)*.83;
                     #elif STARS_COL == 1 // White
                         stars_color = stars_col.white;
                     #elif STARS_COL == 2 // Blue
@@ -198,8 +204,7 @@ varying vec2 texcoord;
 
                 // ▼ Sun
                 
-                float sun_d = distance(rel_pos.xyz, sun_pos);
-
+                float sun_d = distance(sky_rel_pos.xyz, sun_pos);
 
                 sky = lerp(
                     sun_col.sunlight,
@@ -224,15 +229,15 @@ varying vec2 texcoord;
                 float sunlight = (1. -smoothstep(-2., 1., saturate(sun_d*1.3)))/2.;
 
                 // Here side is the SUN'S side so bye bye moon.
-                float here_side_is_sun = 1.- smoothstep(.9, 1., distance(rel_pos.xyz, sun_pos));
+                float here_side_is_sun = 1.- smoothstep(.9, 1., distance(sky_rel_pos.xyz, sun_pos));
 
                 // ▲ Sun
 
                 // ▼ Moon
 
-                sky = here_side_is_sun < .5 ? draw_moon(sky, rel_pos.xyz, moon_pos, sky_color) : sky;
+                sky = here_side_is_sun < .5 ? draw_moon(sky, sky_rel_pos.xyz, moon_pos, sky_color) : sky;
 
-                float moonlight = 1. -smoothstep(-2., 1., saturate(distance(rel_pos.xyz, moon_pos)));
+                float moonlight = 1. -smoothstep(-2., 1., saturate(distance(sky_rel_pos.xyz, moon_pos)));
 
                 sky = lerp(
                     sky,
@@ -248,7 +253,7 @@ varying vec2 texcoord;
 
                 #ifdef ENABLE_CLOUDS
                     // 2D pos
-                    vec2 p = rel_pos.xz/(rel_pos.y +lerp(2.5, 5.5, rel_pos.y));
+                    vec2 p = sky_rel_pos.xz/(sky_rel_pos.y +lerp(2.5, 5.5, sky_rel_pos.y));
 
                     // Base cloud
                     float cloud = fbm12(
@@ -303,6 +308,11 @@ varying vec2 texcoord;
                     ) -sunlight*lerp(2., 8., is_twilight)
                 );
                 
+            #endif
+        } else {
+            #ifdef ENABLE_GODRAYS
+                // Godrays
+                #include "lib/godrays.glsl"
             #endif
         }
 

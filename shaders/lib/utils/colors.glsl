@@ -96,3 +96,21 @@
 
     vec3 fog_color = get_col(fog_col, is_day, is_twilight);
 #endif
+
+// Godrays colors
+#ifdef IMPORT_GODRAYS_COL
+    // # Dependencies:
+    // - `#include "lib/defs/col.glsl"`
+    // - `#include "lib/utils/functions.glsl"`
+    // - `uniform float rainStrength;`
+    // - `#include "lib/utils/time_elms.glsl"`
+
+    Col godrays_col = Col(
+        vec3(1.00, 0.90, 0.60), // Day godrays color
+        vec3(0.60, 0.87, 1.00)*1.2, // Night godrays color
+        vec3(1.00, 0.40, 0.00), // Twilight godrays color
+        vec3(0.60, 0.70, 0.80)  // Rainy godrays color
+    );
+
+    vec3 godrays_color = get_col(godrays_col, is_day, is_twilight);
+#endif

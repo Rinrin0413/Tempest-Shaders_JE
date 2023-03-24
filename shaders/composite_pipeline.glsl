@@ -28,19 +28,22 @@ uniform mat4 gbufferModelViewInverse;
     uniform sampler2D gaux3; // stp = normal.xyz
     uniform sampler2D gaux4; // st = lmcoord.xy, p = shadowPos.w
     uniform sampler2D colortex8; // s = opacity, t = is_tinted_glass_shadow
-    uniform sampler2D shadowtex0, shadowtex1;
-    uniform sampler2D shadowcolor0;
+    uniform sampler2D shadowtex0;
     uniform mat4 gbufferProjectionInverse;
     uniform mat4 gbufferModelView;
+    uniform mat4 shadowProjection;
+    uniform mat4 shadowModelView;
     uniform float near, far;
     uniform float rainStrength;
     uniform float darknessFactor;
     uniform int isEyeInWater;
     uniform float viewWidth, viewHeight;
+    uniform float frameTimeCounter;
 
     #include "lib/utils/functions.glsl"
     #include "lib/defs/properties.glsl"
     #include "lib/defs/col.glsl"
+    #include "lib/defs/distort.glsl"
 
     vec3 apply_shadow(vec3 albedo, const float shadow_level) {
 
@@ -336,14 +339,26 @@ uniform mat4 gbufferModelViewInverse;
 
             // ▲ Environment
 
+            #if defined(ENABLE_GODRAYS) || defined(ENABLE_FOG)
+                vec4 view_pos = gbufferProjectionInverse*(vec4(texcoord, texture2D(depthtex0, texcoord).r, 1.)*2. -1.);
+                vec4 rel_pos = gbufferModelViewInverse*(view_pos/view_pos.w);
+            #endif
+
+            // ▼ Godrays (for BLEND)
+            #ifdef ENABLE_GODRAYS
+                if (.5 < is_blend) {
+                    vec4 sky_rel_pos = normalize(rel_pos);
+                    #include "lib/godrays.glsl"
+                }
+            #endif
+            // ▲ Godrays (for BLEND)
+
             // ▼ Fog
             #ifdef ENABLE_FOG
                 #define IMPORT_FOG_COL
                 #define IMPORT_SKY_COL
                 // vec3:fog_color, vec3:sky_color
                 #include "lib/utils/colors.glsl"
-                
-                vec4 view_pos = gbufferProjectionInverse*(vec4(texcoord, texture2D(depthtex0, texcoord).r, 1.)*2. -1.);
 
                 fog_color = lerp(
                     sky_color,
@@ -351,7 +366,6 @@ uniform mat4 gbufferModelViewInverse;
                     fogify(max(0., dot(normalize(view_pos.xyz), gbufferModelView[1].xyz)), lerp(.06, .4, rainStrength))
                 );
 
-                vec4 rel_pos = gbufferModelViewInverse*(view_pos/view_pos.w);
                 float dist = length(rel_pos/rel_pos.w);
                 float fog = saturate(smoothstep(
                     0., 
