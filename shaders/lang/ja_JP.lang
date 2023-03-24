@@ -14,6 +14,7 @@ option.SHADOW_BIAS.comment = シャドウアクネ(磁場みたいな模様と�
 
 screen.env = 環境
 option.ENABLE_FOG = 霧
+option.ENABLE_GODRAYS = ゴッドレイ(日差し)
 option.ENABLE_WIND = 風
 option.ENABLE_WIND.comment = 風で草木やランタンなどが揺れます
 

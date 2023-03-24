@@ -14,6 +14,7 @@ option.SHADOW_BIAS.comment = If you got shadow acne, increase this. If you got p
 
 screen.env = Environment
 option.ENABLE_FOG = Fog
+option.ENABLE_GODRAYS = Godrays(sunbeams)
 option.ENABLE_WIND = Wind
 option.ENABLE_WIND.comment = The wind blows the foliages and lantern etc
 
