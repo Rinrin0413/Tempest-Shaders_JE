@@ -19,6 +19,8 @@ const float lightdot_threshold =
 
 #define ENABLE_FOG
 
+#define ENABLE_GODRAYS
+
 #define ENABLE_WATER_WAVES
 
 #define ENABLE_WIND
@@ -36,7 +38,5 @@ const float sunPathRotation = -40; // [-90 -80 -70 -60 -50 -40 -30 -20 -10 0 10 
 #define ENABLE_MOON_TEXTURE
 
 #define THE_END_SKY_COL 0 // [0 1 2 3 4 5]
-
-#define ENABLE_GODRAYS
 
 // #define ENABLE_THE_END_SKY_IN_OVERWORLD
