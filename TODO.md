@@ -6,7 +6,6 @@
 
 ## Queue
 
-- Sun/Moon light bloom
 - Lens flare
 - Smooth shadows
 - Motion blur
