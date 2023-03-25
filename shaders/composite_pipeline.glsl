@@ -116,10 +116,10 @@ uniform mat4 gbufferModelViewInverse;
             vec3 d_colortex8 = texture2D(colortex8, texcoord).stp;
 
             /**
-            * Whether is BLEND 
-            * Use it like:
-            * if (.5 < is_blend) {
-            */
+             * Whether is BLEND
+             * Use it like:
+             * if (.5 < is_blend) {
+             */
             float is_blend = d_gaux1.x;
 
             /* Whether the surface is in water */
@@ -127,10 +127,10 @@ uniform mat4 gbufferModelViewInverse;
             is_water = lerp(is_water, abs(is_water -1.), isEyeInWater);
 
             /**
-            * The lightmap coordinates
-            * x: block light level (from light source)
-            * y: sunlight and moonlight level (not drop shadow)
-            */
+             * The lightmap coordinates
+             * x: block light level (from light source)
+             * y: sunlight and moonlight level (not drop shadow)
+             */
             vec2 lmc = d_gaux4.xy;
 
             /* The Directional Sky Light Coordinates */
@@ -158,13 +158,21 @@ uniform mat4 gbufferModelViewInverse;
             float is_tinted_glass_shadow = d_colortex8.y;
 
             /**
-            * Whether the surface is top;
-            * between 0 and 1. if the surface is top completely, it is 1.
-            */
+             * Whether the surface is top;
+             * between 0 and 1. if the surface is top completely, it is 1.
+             */
             float is_top = saturate(normal.y);
 
             float depth0 = texture2D(depthtex0, texcoord).x;
             float depth1 = texture2D(depthtex1, texcoord).x;
+
+            /** 
+             * Whether it is raining,
+             * and whether the surface is exposed to the outside air.
+             * 
+             * between 0 and 1. it is 1 if it rains completely.
+             */
+            float is_rain = lerp(0., rainStrength, sky_light);
             
             // ▲ DB
 
@@ -179,17 +187,13 @@ uniform mat4 gbufferModelViewInverse;
                 vec3(0.10, 1.00, 0.70)*2.1, // Underwater light color
                 vec3(0.30, 0.50, 1.00)*1.8  // Deep underwater color
             );
-            vec3 light_color = lerp(light_col.primary, light_col.rain, rainStrength)*5.;
+            vec3 light_color = lerp(light_col.primary, light_col.rain, is_rain)*5.;
             vec3 light_color_underwater = lerp(light_col.deep_underwater,  light_col.underwater, lmc.y)*5.;
 
             float suppress = lerp(
                 0. < is_night ? 1. : lerp(1., .27, sky_light), 
-                lerp(
-                    2.8, 
-                    0. < is_night ? .6 : .24,
-                    sky_light
-                ), 
-                rainStrength
+                .35,
+                is_rain
             );
             float light_intensity = .5 < is_block ? 
                 // [Note] (block_light^8) * 2 * suppress
@@ -203,7 +207,7 @@ uniform mat4 gbufferModelViewInverse;
                 d_slc = lerp(
                     smoothstep(-1., 1., lmc.y +.5) -.625,
                     sky_light,
-                    rainStrength
+                    is_rain
                 );
 
                 // Interference of light in shadows
