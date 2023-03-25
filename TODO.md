@@ -2,7 +2,6 @@
 
 ## Bugs
 
-- Indoor block light too bright in rainy weather
 - Rain drops are drowned out by fog
 
 ## Queue
