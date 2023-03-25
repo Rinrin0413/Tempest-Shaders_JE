@@ -28,6 +28,7 @@ varying vec2 texcoord;
     uniform vec3 sunPosition, moonPosition;
     uniform float frameTimeCounter;
     uniform int moonPhase; // 0 ~ 7
+    uniform ivec2 eyeBrightnessSmooth;
 
     #include "lib/utils/functions.glsl"
     #include "lib/defs/col.glsl"

@@ -87,12 +87,17 @@
     // - `uniform float rainStrength;`
     // - `#include "lib/utils/time_elms.glsl"`
 
+    const float eyeBrightnessHalflife = 2.0f;
+
     Col fog_col = Col(
         vec3(0.80, 0.95, 1.00), // Day fog color
         vec3(0.00, 0.05, 0.10), // Night fog color
         vec3(0.43, 0.16, 0.00), // Twilight fog color
         vec3(0.60, 0.70, 0.80)  // Rainy fog color
     );
+
+    // Underground fog color
+    vec3 underground_fog_color = vec3(0.25, 0.30, 0.35);
 
     vec3 fog_color = get_col(fog_col, is_day, is_twilight);
 #endif

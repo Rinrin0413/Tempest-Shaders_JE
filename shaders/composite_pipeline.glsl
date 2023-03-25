@@ -39,6 +39,7 @@ uniform mat4 gbufferModelViewInverse;
     uniform int isEyeInWater;
     uniform float viewWidth, viewHeight;
     uniform float frameTimeCounter;
+    uniform ivec2 eyeBrightnessSmooth;
 
     #include "lib/utils/functions.glsl"
     #include "lib/defs/properties.glsl"
@@ -357,13 +358,17 @@ uniform mat4 gbufferModelViewInverse;
             #ifdef ENABLE_FOG
                 #define IMPORT_FOG_COL
                 #define IMPORT_SKY_COL
-                // vec3:fog_color, vec3:sky_color
+                // vec3:fog_color, vec3:underground_fog_color, vec3:sky_color
                 #include "lib/utils/colors.glsl"
 
                 fog_color = lerp(
-                    sky_color,
-                    fog_color,
-                    fogify(max(0., dot(normalize(view_pos.xyz), gbufferModelView[1].xyz)), lerp(.06, .4, rainStrength))
+                    underground_fog_color,
+                    lerp(
+                        sky_color,
+                        fog_color,
+                        fogify(max(0., dot(normalize(view_pos.xyz), gbufferModelView[1].xyz)), lerp(.06, .4, rainStrength))
+                    ),
+                    float(eyeBrightnessSmooth.y/240.)
                 );
 
                 float dist = length(rel_pos/rel_pos.w);
@@ -387,8 +392,6 @@ uniform mat4 gbufferModelViewInverse;
 
             // Again LIGHT ABSORPTION
             albedo = .5 < is_tinted_glass_shadow ? vec3(0.) : albedo;
-
-            // albedo = vec3(light_dot);
         }
 
         /* DRAWBUFFERS:0 */
