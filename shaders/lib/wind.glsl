@@ -25,7 +25,7 @@ if (is_hanged) {
     // Swing offsets
     vec3 swing = vec3(sin(
         frameTimeCounter +bbpn
-    )/10.);
+    )*.1);
 
     // Pseudo axis implemented by suppressing movement near the origin.
     // abs_pos.y was subtracted by 0.01 because the chain will be fucking buggg.
@@ -36,7 +36,7 @@ if (is_hanged) {
     swing.z *= (hash11(bbpn*16.) -.5)*2.;
 
     // Height adjustment according to the swing offsets.
-    swing.y = smoothstep(0., .8, abs(swing.x/2.) +abs(swing.z/2.));
+    swing.y = smoothstep(0., .8, abs(swing.x*.5) +abs(swing.z*.5));
 
     rel_pos.xyz += swing;
     
@@ -52,5 +52,5 @@ if (is_hanged) {
     wave *= is_rooted ? gl_MultiTexCoord0.t < mc_midTexCoord.t ? 1. : 0. : 1.;
 
     rel_pos.x += wave*sin(abs_pos.x +abs_pos.z*abs_pos.y +frameTimeCounter*3.);
-    rel_pos.z -= wave/2.7;
+    rel_pos.z -= wave*.5;
 }

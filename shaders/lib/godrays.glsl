@@ -24,15 +24,12 @@
 // vec3:godrays_color
 #include "./utils/colors.glsl"
 
-// Don't exceed 1.0
-float q = lerp(0.8, 0.6, is_twilight);
-
-vec3 ray_rel_pos = rel_pos.xyz*lerp(1., 1./q, hash12(gl_FragCoord.xy +frameTimeCounter));
+vec3 ray_rel_pos = rel_pos.xyz*lerp(1., lerp(1.25, 1.6667, is_twilight), hash12(gl_FragCoord.xy +frameTimeCounter));
 float ray_factor = 0.;
 
 // 0.0625 = 0.25^2
 while (.0625 < dot(ray_rel_pos, ray_rel_pos)) {
-    ray_rel_pos *= q;
+    ray_rel_pos *= lerp(.8, .6, is_twilight);
     vec4 ray_pos = vec4(ray_rel_pos + gbufferModelViewInverse[3].xyz, 1.);
     ray_pos = shadowProjection*(shadowModelView*ray_pos);
     ray_pos.xyz = distort33(ray_pos.xyz)*.5 +.5;

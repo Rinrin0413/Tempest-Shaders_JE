@@ -307,7 +307,7 @@ uniform mat4 gbufferModelViewInverse;
                 lerp(albedo,
                     lerp(
                         albedo +twilight_col,
-                        albedo/2.,
+                        albedo*.5,
                         rainStrength
                     ),
                     is_twilight
@@ -372,7 +372,9 @@ uniform mat4 gbufferModelViewInverse;
                         fog_color,
                         fogify(max(0., dot(normalize(view_pos.xyz), gbufferModelView[1].xyz)), lerp(.06, .4, rainStrength))
                     ),
-                    float(eyeBrightnessSmooth.y/240.)
+                    // 0.00416666666 = 1/240
+                    // use saturate() because it is low precision
+                    saturate(float(eyeBrightnessSmooth.y)*.004167)
                 );
 
                 float dist = length(rel_pos/rel_pos.w);

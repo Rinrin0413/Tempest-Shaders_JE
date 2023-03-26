@@ -66,8 +66,8 @@ varying vec2 texcoord;
         #include "lib/utils/colors.glsl"
 
         #ifdef ENABLE_MOON_TEXTURE
-            vec2 noise_st = rel_pos.xz/((rel_pos.y +1.)/2.);
-            float sea = fbm12_moon(noise_st/2.)*.65;
+            vec2 noise_st = rel_pos.xz/((rel_pos.y +1.)*.5);
+            float sea = fbm12_moon(noise_st*.5)*.65;
             float craters = saturate(fbm12_moon(noise_st))*.6;
             moon_col.main = moon_col.main -sea +craters;
         #endif
@@ -124,7 +124,7 @@ varying vec2 texcoord;
         if (1. <= depth0) {
             #if defined(END_SHADERS) || defined(ENABLE_THE_END_SKY_IN_OVERWORLD)
                 // The end door:
-                float opening_speed = frameTimeCounter/16.;
+                float opening_speed = frameTimeCounter*.06;
                 vec3 noise = texture2D(noisetex, sky_rel_pos.yy +opening_speed).rgb;
 
                 vec3 noisy_base_col = vec3(
