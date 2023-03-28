@@ -45,6 +45,7 @@ uniform mat4 gbufferModelViewInverse;
     #include "lib/defs/properties.glsl"
     #include "lib/defs/col.glsl"
     #include "lib/defs/distort.glsl"
+    #include "lib/defs/env_light_col.glsl"
 
     vec3 apply_shadow(vec3 albedo, const float shadow_level) {
 
@@ -79,30 +80,11 @@ uniform mat4 gbufferModelViewInverse;
             smoothstep(0., .85, smoothstep(0., lerp(2046.*(far/320.)*lerp(1., .2, rainStrength), 1.,  d), d));
     }
 
-    struct LightCol {
-        vec3 primary;
-        vec3 rain;
-        vec3 underwater;
-        vec3 deep_underwater;
-    };
-    
-    struct EnvCol {
-        vec3 day;
-        vec3 night;
-        vec3 twilight;
-    };
-
     void main() {
 
         vec3 albedo = texture2D(gcolor, texcoord).rgb;
 
         if (texture2D(depthtex0, texcoord).x < 1.) {
-            // Environment colors
-            EnvCol env_col = EnvCol(
-                vec3(0.91, 0.94, 1.0)*1.6, // Day env. color
-                vec3(0.68, 0.75, 1.0)*1.6, // Night env. color
-                vec3(1.00, 0.48, 0.0)      // Dawn and Dusk env. color
-            );
 
             // ▼ DB
 
@@ -174,21 +156,15 @@ uniform mat4 gbufferModelViewInverse;
              */
             float is_rain = lerp(0., rainStrength, sky_light);
             
+            #define IMPORT_ENV_COL
+            #define IMPORT_LIGHT_COL
+            #define IMPORT_FOG_COL
+            #define IMPORT_SKY_COL
+            // vec3:env_col, vec3:light_color, vec3:light_color_underwater, vec3:fog_color, vec3:underground_fog_color, vec3:sky_color
+            #include "lib/utils/colors.glsl"
             // ▲ DB
 
             // ▼ Lightmap
-
-            // Lightings
-
-            // Light colors
-            LightCol light_col = LightCol(
-                vec3(1.00, 0.88, 0.44),     // Primary light color
-                vec3(0.83, 1.00, 0.88)*2.0, // Rain light color
-                vec3(0.10, 1.00, 0.70)*2.1, // Underwater light color
-                vec3(0.30, 0.50, 1.00)*1.8  // Deep underwater color
-            );
-            vec3 light_color = lerp(light_col.primary, light_col.rain, is_rain)*5.;
-            vec3 light_color_underwater = lerp(light_col.deep_underwater,  light_col.underwater, lmc.y)*5.;
 
             float suppress = lerp(
                 0. < is_night ? 1. : lerp(1., .27, sky_light), 
@@ -360,11 +336,6 @@ uniform mat4 gbufferModelViewInverse;
 
             // ▼ Fog
             #ifdef ENABLE_FOG
-                #define IMPORT_FOG_COL
-                #define IMPORT_SKY_COL
-                // vec3:fog_color, vec3:underground_fog_color, vec3:sky_color
-                #include "lib/utils/colors.glsl"
-
                 fog_color = lerp(
                     underground_fog_color,
                     lerp(
