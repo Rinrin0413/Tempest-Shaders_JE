@@ -89,7 +89,7 @@
     const float eyeBrightnessHalflife = 2.0f;
 
     Col fog_col = Col(
-        vec3(0.80, 0.95, 1.00), // Day fog color
+        vec3(0.66, 0.84, 0.94), // Day fog color
         vec3(0.00, 0.05, 0.10), // Night fog color
         vec3(0.43, 0.16, 0.00), // Twilight fog color
         vec3(0.60, 0.70, 0.80)  // Rainy fog color
@@ -140,7 +140,7 @@
     // - lmc
 
     LightCol light_col = LightCol(
-        vec3(1.00, 0.88, 0.44), // Primary light color
+        vec3(1.12, 0.88, 0.44), // Primary light color
         vec3(1.66, 2.00, 1.76), // Rain light color
         vec3(0.21, 2.10, 1.47), // Underwater light color
         vec3(0.54, 0.90, 1.80)  // Deep underwater color
