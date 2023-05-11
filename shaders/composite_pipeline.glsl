@@ -2,9 +2,9 @@
 // - VSH (composite.vsh)
 // - FSH (composite.fsh)
 
+uniform mat4 gbufferModelViewInverse;
 varying vec2 texcoord;
 varying vec3 sun_pos, moon_pos;
-uniform mat4 gbufferModelViewInverse;
 
 // Vertex shaders
 #if defined(VSH)
@@ -40,6 +40,7 @@ uniform mat4 gbufferModelViewInverse;
     uniform float viewWidth, viewHeight;
     uniform float frameTimeCounter;
     uniform ivec2 eyeBrightnessSmooth;
+    uniform vec3 cameraPosition;
 
     #include "lib/utils/functions.glsl"
     #include "lib/defs/properties.glsl"
@@ -80,9 +81,30 @@ uniform mat4 gbufferModelViewInverse;
             smoothstep(0., .85, smoothstep(0., lerp(2046.*(far/320.)*lerp(1., .2, rainStrength), 1.,  d), d));
     }
 
+    float water_wave(vec3 pos) {
+        vec2 uv = pos.xz*.34 +pos.z*.26;
+        float speed = frameTimeCounter;
+        float noise = snoise(uv +vec2(
+            snoise(uv +speed), 
+            snoise(uv -speed)
+        ));
+        return smoothstep(-.8, 1., noise);
+    }
+
+    vec3 water_wave_normal(vec3 pos) {
+        float step = .05;
+        float height = water_wave(pos);
+        vec2 dxy = height -vec2(
+            water_wave(pos +vec3(step, 0., 0.)),
+            water_wave(pos +vec3(0., 0., step))
+        );
+        return normalize(vec3(dxy/step, 1.));
+    }
+
     void main() {
 
         vec3 albedo = texture2D(gcolor, texcoord).rgb;
+        vec3 pre_albedo = albedo;
 
         if (texture2D(depthtex0, texcoord).x < 1.) {
 
@@ -155,6 +177,9 @@ uniform mat4 gbufferModelViewInverse;
              * between 0 and 1. it is 1 if it rains completely.
              */
             float is_rain = lerp(0., rainStrength, sky_light);
+
+            vec4 view_pos = gbufferProjectionInverse*(vec4(texcoord, texture2D(depthtex0, texcoord).r, 1.)*2. -1.);
+            vec4 rel_pos = gbufferModelViewInverse*(view_pos/view_pos.w);
             
             #define IMPORT_ENV_COL
             #define IMPORT_LIGHT_COL
@@ -320,21 +345,7 @@ uniform mat4 gbufferModelViewInverse;
 
             // ▲ Environment
 
-            #if defined(ENABLE_GODRAYS) || defined(ENABLE_FOG)
-                vec4 view_pos = gbufferProjectionInverse*(vec4(texcoord, texture2D(depthtex0, texcoord).r, 1.)*2. -1.);
-                vec4 rel_pos = gbufferModelViewInverse*(view_pos/view_pos.w);
-            #endif
-
-            // ▼ Godrays (for BLEND)
-            #ifdef ENABLE_GODRAYS
-                if (.5 < is_blend) {
-                    vec4 sky_rel_pos = normalize(rel_pos);
-                    #include "lib/godrays.glsl"
-                }
-            #endif
-            // ▲ Godrays (for BLEND)
-
-            // ▼ Fog
+            // ▼ Fog (behind BLEND)
             #ifdef ENABLE_FOG
                 fog_color = lerp(
                     underground_fog_color,
@@ -360,9 +371,61 @@ uniform mat4 gbufferModelViewInverse;
                     lerp(extreme_depth(depth1, fog) -extreme_depth(depth0, fog), 0., opacity): 
                     0.;
 
-                albedo = lerp(albedo, fog_color, saturate(fog +fog_behind_blend));
+                albedo = lerp(albedo, fog_color, saturate(fog_behind_blend));
+
             #endif
-            // ▲ Fog
+            // ▲ Fog (behind BLEND)
+
+            // ▼ Water surface
+            if (.5 < is_water) {
+                // vec3 ref_normal = reflect(normalize(view_pos.xyz), mat3(gbufferModelView)*normal);
+
+                // const int refinementSteps = 4;
+                // const int raySteps = 32;
+                // vec3 rayTracePosHit = vec3(0.);
+                // vec3 startPos = view_pos + ref_normal + 0.05;
+                // vec3 tracePos = ref_normal + hash33(floor(view_pos * 2048.0)) * 0.1;
+                // int sr = 0;
+                // for (int i = 0; i < raySteps; i++) {
+                //     vec4 uv = proj * vec4(startPos, 1.0);
+                //     uv.xyz = uv.xyz / uv.w * 0.5 + 0.5;
+                //     if (uv.x < 0 || uv.x > 1 || uv.y < 0 || uv.y > 1 || uv.z < 0 || uv.z > 1.0) {
+                //         break;
+                //     }
+                //     vec3 viewPosAlt = getViewPos(projInv, uv.xy, texture2D(depthTex, uv.xy).x).xyz;
+                //     if (distance(startPos, viewPosAlt) < length(ref_normal) * pow(length(tracePos), 0.1)) {
+                //         sr++;
+                //         if (sr >= refinementSteps) {
+                //             rayTracePosHit = vec3(uv.xy, 1.0);
+                //             break;
+                //         }
+                //         tracePos -= ref_normal;
+                //         ref_normal *= 0.07;
+                //     }
+                //     ref_normal *= 2.0;
+                //     tracePos += ref_normal;
+                //     startPos = view_pos + tracePos;
+                // }
+
+                // // vec3 abs_pos = rel_pos.xyz +cameraPosition;
+                // // albedo = lerp(albedo, vec3(water_wave_normal(abs_pos)), 1);
+            }
+            // ▲ Water surface
+
+            // ▼ Godrays (for BLEND)
+            #ifdef ENABLE_GODRAYS
+                if (.5 < is_blend) {
+                    vec4 sky_rel_pos = normalize(rel_pos);
+                    #include "lib/godrays.glsl"
+                }
+            #endif
+            // ▲ Godrays (for BLEND)
+
+            // ▼ Fog (primary)
+            #ifdef ENABLE_FOG
+                albedo = lerp(albedo, fog_color, saturate(fog));
+            #endif
+            // ▲ Fog (primary)
 
             // Darkness effect
             albedo -= lerp(0., .5, darknessFactor);

@@ -127,8 +127,13 @@ void main() {
     // ▲ Lightmap
 
     // Entity damage overlay
-    #if defined(GBUFFERS_ENTITIES)
+    #ifdef GBUFFERS_ENTITIES
         albedo.rgb = lerp(albedo.rgb, entityColor.rgb, entityColor.a);
+    #endif
+
+    // Remove water texture
+    #ifdef GBUFFERS_WATER
+        albedo = .5 < is_water ? vec4(0.) : albedo;
     #endif
 
     /* DRAWBUFFERS:045678 */

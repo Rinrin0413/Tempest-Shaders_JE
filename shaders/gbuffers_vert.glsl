@@ -50,6 +50,7 @@ void main() {
     normal = mat3(gbufferModelViewInverse)*normalize(gl_NormalMatrix*gl_Normal);
 
     int b_id = int(mc_Entity.x);
+    is_water = b_id == 10000 ? 1. : 0.;
 
     // ▼ Waving foliage and lanterns etc.
     #if defined(ENABLE_WIND) && (defined(GBUFFERS_TERRAIN) || defined(GBUFFERS_WATER))
