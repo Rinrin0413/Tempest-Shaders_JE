@@ -28,4 +28,10 @@ fog_color = lerp(
     saturate(float(eyeBrightnessSmooth.y)*.004167)
 );
 
-albedo = lerp(albedo, fog_color, saturate((length(rel_pos) -near)/(far -near)));
+float fog_factor = smoothstep(
+    lerp(.45, 0., rainStrength), 
+    lerp(.83, 1., rainStrength), 
+    (length(rel_pos*.8) -near)/(far -near)
+);
+
+albedo = lerp(albedo, fog_color, fog_factor);
