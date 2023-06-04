@@ -29,6 +29,7 @@ varying vec2 texcoord;
     uniform float frameTimeCounter;
     uniform int moonPhase; // 0 ~ 7
     uniform ivec2 eyeBrightnessSmooth;
+    uniform float near, far;
 
     #include "lib/utils/functions.glsl"
     #include "lib/defs/col.glsl"
@@ -120,6 +121,11 @@ varying vec2 texcoord;
         // float:is_day, float:is_night, is_twilight
         #include "lib/utils/time_elms.glsl"
 
+        #define IMPORT_FOG_COL
+        #define IMPORT_SKY_COL
+        // vec3:underground_fog_color, vec3:sky_color
+        #include "lib/utils/colors.glsl"
+
         // Whether is sky
         if (1. <= depth0) {
             #if defined(END_SHADERS) || defined(ENABLE_THE_END_SKY_IN_OVERWORLD)
@@ -158,11 +164,9 @@ varying vec2 texcoord;
                 // ▼ DB
 
                 #define IMPORT_STARS_COL
-                #define IMPORT_SKY_COL
                 #define IMPORT_SUN_COL
                 #define IMPORT_CLOUD_COL
-                #define IMPORT_FOG_COL
-                // vec3:sky_color, vec3:stars_col, vec3:sun_col, vec3:cloud_color, vec3:fog_color 
+                // vec3:stars_col, vec3:sun_col, vec3:cloud_color
                 #include "lib/utils/colors.glsl"
 
                 vec4 view_pos = gbufferProjectionInverse
@@ -315,6 +319,13 @@ varying vec2 texcoord;
                 // Godrays
                 #include "lib/godrays.glsl"
             #endif
+
+            // ▼ Fog
+            #ifdef ENABLE_FOG
+                vec4 view_pos = gbufferProjectionInverse*(vec4(texcoord, texture2D(depthtex0, texcoord).r, 1.)*2. -1.);
+                #include "lib/fog.glsl"
+            #endif
+            // ▲ Fog
         }
 
         /* DRAWBUFFERS:0 */

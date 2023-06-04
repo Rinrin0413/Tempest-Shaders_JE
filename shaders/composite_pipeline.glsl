@@ -75,12 +75,6 @@ varying vec3 sun_pos, moon_pos;
         );
     }
 
-    float extreme_depth(const float d, const float fog) {
-        // return pow(d, 2046.);
-        return d <= 0. ? 0. :
-            smoothstep(0., .85, smoothstep(0., lerp(2046.*(far/320.)*lerp(1., .2, rainStrength), 1.,  d), d));
-    }
-
     float water_wave(vec3 pos) {
         vec2 uv = pos.xz*.34 +pos.z*.26;
         float speed = frameTimeCounter;
@@ -268,6 +262,9 @@ varying vec3 sun_pos, moon_pos;
             );
 
             // ▲ Lightmap
+
+            // Again LIGHT ABSORPTION
+            albedo = .5 < is_tinted_glass_shadow ? vec3(0.) : albedo;
             
             // ▼ Environment
 
@@ -345,37 +342,6 @@ varying vec3 sun_pos, moon_pos;
 
             // ▲ Environment
 
-            // ▼ Fog (behind BLEND)
-            #ifdef ENABLE_FOG
-                fog_color = lerp(
-                    underground_fog_color,
-                    lerp(
-                        sky_color,
-                        fog_color,
-                        fogify(max(0., dot(normalize(view_pos.xyz), gbufferModelView[1].xyz)), lerp(.06, .4, rainStrength))
-                    ),
-                    // 0.00416666666 = 1/240
-                    // use saturate() because it is low precision
-                    saturate(float(eyeBrightnessSmooth.y)*.004167)
-                );
-
-                float dist = length(rel_pos/rel_pos.w);
-                float fog = saturate(smoothstep(
-                    0., 
-                    lerp(.76, .2, rainStrength), 
-                    (dist -near)/(far -near)
-                ));
-                fog *= lerp(1., 1.8, is_blend);
-
-                float fog_behind_blend = depth1 < 1. ? 
-                    lerp(extreme_depth(depth1, fog) -extreme_depth(depth0, fog), 0., opacity): 
-                    0.;
-
-                albedo = lerp(albedo, fog_color, saturate(fog_behind_blend));
-
-            #endif
-            // ▲ Fog (behind BLEND)
-
             // ▼ Water surface
             if (.5 < is_water) {
                 // vec3 ref_normal = reflect(normalize(view_pos.xyz), mat3(gbufferModelView)*normal);
@@ -421,17 +387,14 @@ varying vec3 sun_pos, moon_pos;
             #endif
             // ▲ Godrays (for BLEND)
 
-            // ▼ Fog (primary)
+            // ▼ Fog
             #ifdef ENABLE_FOG
-                albedo = lerp(albedo, fog_color, saturate(fog));
+                #include "lib/fog.glsl"
             #endif
-            // ▲ Fog (primary)
+            // ▲ Fog
 
             // Darkness effect
             albedo -= lerp(0., .5, darknessFactor);
-
-            // Again LIGHT ABSORPTION
-            albedo = .5 < is_tinted_glass_shadow ? vec3(0.) : albedo;
         }
 
         /* DRAWBUFFERS:0 */
