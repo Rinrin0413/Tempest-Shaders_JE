@@ -42,8 +42,10 @@
 - composite.vsh
 - composite.fsh
 
-# Libraries
+# Library
 - [lib/wind.glsl](./shaders/lib/wind.glsl)
+- [lib/godrays.glsl](./shaders/lib/godrays.glsl)
+- [lib/fog.glsl](./shaders/lib/fog.glsl)
 - [lib/utils/](#Utils) (directory)
 - [lib/defs/](#Defines) (directory)
 
@@ -58,6 +60,8 @@
 - [lib/defs/col.glsl](./shaders/lib/defs/col.glsl)
 - [lib/defs/sun_moon_col.gls](./shaders/lib/defs/sun_moon_col.glsl)
 - [lib/defs/distort.glsl](./shaders/lib/defs/distort.glsl)
+- [lib/defs/stars_col.gls](./shaders/lib/defs/stars_col.glsl)
+- [lib/defs/env_light_col.glsl](./shaders/lib/defs/env_light_col.glsl)
 
 # Others
 - [shaders.properties](./shaders/shaders.properties)
