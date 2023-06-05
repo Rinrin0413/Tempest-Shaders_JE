@@ -23,16 +23,25 @@ See [releases](https://github.com/Rinrin0413/Tempest-Shaders_JE/releases)
 
 ## Requirements
 
+- Windows or Linux
 - Minecraft Java Edition 1.17 or later
 - OptiFine or Iris Shaders
-- Windows or Linux
 
-Also, there may be environments where it works properly outside of these requirements.  
-and even if you meet these requirements,
-it may not work properly.
+Also if the requirements are met, there is a possibility that it will not work.
+and even if the requirements are not met, there is a possibility that it will work.
 
 So, if you have any problems with the shader pack,
 please [create an issue](https://github.com/Rinrin0413/Tempest-Shaders_JE/issues) on GitHub!
+
+### Tested environment
+
+- OS: openSUSE Leap 15.4
+- GPU: NVIDIA GeForce RTX 3060
+- Minecraft: Java Edition 1.19.4
+- Mod Loader: Fabric Loader 0.14.19
+- Mods:
+    - Sodium 0.4.10+build.24  
+    - Iris 1.6.3
 
 ---
 
